@@ -51,8 +51,6 @@ def test_env_int_when_missing_and_required_is_error():
     'default,expected',
     (
         (1, 1),
-        ('1', 1),
-        ('-1', -1),
         (-1, -1),
     )
 )
@@ -73,3 +71,10 @@ def test_that_required_and_default_are_mutually_exclusive():
     """
     with pytest.raises(ValueError):
         env_int('TEST_INT_ENV_VARIABLE', required=True, default=1)
+
+
+def test_that_a_non_integer_default_value_is_allowed():
+    assert 'TEST_INT_ENV_VARIABLE' not in os.environ
+
+    actual = env_int('TEST_INT_ENV_VARIABLE', default=None)
+    assert actual is None

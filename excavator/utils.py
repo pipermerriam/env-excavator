@@ -64,8 +64,13 @@ def env_list(name, separator=',', required=False, default=empty):
     done by splitting the string value from the environment on a given
     separator.
     """
-    value = get_env_value(name, required=required, default=default)
+    if required and default is not empty:
+        raise ValueError("Using `default` with `required=True` is invalid")
+
+    value = get_env_value(name, required=required, default=empty)
     if value is empty:
+        if default is not empty:
+            return default
         return []
     # wrapped in list to force evaluation in python 3
     return list(filter(bool, [v.strip() for v in value.split(separator)]))
@@ -78,8 +83,13 @@ def env_int(name, required=False, default=empty):
     environment, a `TypeError` will be raised since we don't want to guess
     about a sensible default.
     """
-    value = get_env_value(name, required=required, default=default)
+    if required and default is not empty:
+        raise ValueError("Using `default` with `required=True` is invalid")
+
+    value = get_env_value(name, required=required, default=empty)
     if value is empty:
+        if default is not empty:
+            return default
         raise ValueError(
             "`env_int` requires either a default value to be specified, or for "
             "the variable to be present in the environment"
@@ -92,10 +102,9 @@ def env_timestamp(name, default=empty, required=False):
         raise ValueError("Using `default` with `required=True` is invalid")
 
     value = get_env_value(name, required=required, default=empty)
-    # change datetime.datetime to time, return time.struct_time type
-    if default is not empty and value is empty:
-        return default
     if value is empty:
+        if default is not empty:
+            return default
         raise ValueError(
             "`env_timestamp` requires either a default value to be specified, or "
             "for the variable to be present in the environment"
@@ -117,10 +126,9 @@ def env_iso8601(name, default=empty, required=False):
         raise ValueError("Using `default` with `required=True` is invalid")
 
     value = get_env_value(name, required=required, default=empty)
-    # change datetime.datetime to time, return time.struct_time type
-    if default is not empty and value is empty:
-        return default
     if value is empty:
+        if default is not empty:
+            return default
         raise ValueError(
             "`env_iso8601` requires either a default value to be specified, or "
             "for the variable to be present in the environment"

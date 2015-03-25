@@ -56,7 +56,7 @@ def test_env_list_with_default_value():
     # sanity check
     assert 'TEST_LIST_ENV_VARIABLE' not in os.environ
 
-    actual = env_list('TEST_LIST_ENV_VARIABLE', default='a,b,c')
+    actual = env_list('TEST_LIST_ENV_VARIABLE', default=['a', 'b', 'c'])
     assert actual == ['a', 'b', 'c']
 
 
